@@ -5,81 +5,56 @@
 
 clear all; close all; clc;
 
-%prefix = '../images/20200107_ndl14_h4_r1/ndl14_h4_r1_';
-% prefix = '../movies_processed/ndl14_hgt1_r2/ndl14_ht1_r2_';
-% prefix = '../movies_processed/ndl14_hgt1_r3/ndl14_ht1_r3_';
-% prefix = '../movies_processed/ndl14_hgt1_r4/ndl14_ht1_r4_';
-% prefix = '../movies_processed/ndl14_hgt2_r5/ndl14_ht2_r5_';
-% prefix = '../movies_processed/ndl14_hgt2_r6/ndl14_ht2_r6_';
-% prefix = '../movies_processed/ndl14_hgt3_r1/ndl14_ht3_r1_';
-% prefix = '../movies_processed/ndl14_hgt3_r2/ndl14_ht3_r2_';
-% prefix = '../movies_processed/ndl14_hgt3_r3/ndl14_ht3_r3_';
-% prefix = '../movies_processed/ndl14_hgt4_r1/ndl14_ht4_r1_';
-% prefix = '../movies_processed/ndl14_hgt4_r2/ndl14_ht4_r2_';
-% prefix = '../movies_processed/ndl14_hgt4_r3/ndl14_ht4_r3_';
-% prefix = '../movies_processed/ndl14_hgt5_r1/ndl14_ht5_r1_';
-prefix = '../movies_processed/ndl14_hgt5_r3/ndl14_ht5_r3_';
+% prefix = '../ndl14_hgt4_r1/ndl14_ht4_r1_';
+% prefix = '../ndl18_hgt0_r3/ndl18_ht0_r3_';
+prefix = '../movies_processed/ndl14_hgt6_r1/ndl14_ht6_r1_';
 
 ext = '.bmp';
-ext_out = '.txt';
+ext_out = '_test.txt';
 
-% load the first image in the movie as the background reference image 
+% load the image before the drop impact in the movie as the background reference 
 %ref_a = imread(strcat(prefix,num2str(7057, '%04g'),ext),'bmp');
-%ref_a = imread(strcat(prefix,num2str(-0876, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-1102, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0676, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0685, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0789, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0852, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0874, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0735, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0940, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0884, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0916, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0876, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0949, '%05g'),ext),'bmp');
-% ref_a = imread(strcat(prefix,num2str(-0854, '%05g'),ext),'bmp');
-ref_a = imread(strcat(prefix,num2str(-1066, '%05g'),ext),'bmp');
 
+%Impact_location, read form the flat image using Vision research software
+%x1 and x2 read from flat surface (ref_a) in figure (1) from top in image
 
-%Read flat surface, estimate the impact postion from the movie
-% Impact_location = 1428;
-% Impact_location = 1515;
-% Impact_location = 1341;
-% Impact_location = 1285;
-% Impact_location = 1237;
-% Impact_location = 1253;
-% Impact_location = 1241;
-% Impact_location = 1335;
-% Impact_location = 1317;
-% Impact_location = 1399;
-% Impact_location = 1219;
-Impact_location = 1279;
+%%for ndl14_ht4_r1
+%ref_a = imread(strcat(prefix,num2str(-0876, '%05g'),ext),'bmp'); 
+%Impact_location = 1300; %Read flat surface, estimate the impact postion from the movie
+%  %for images_2020feb24/ndl14_h4_r1_-0876.bmp
+%  x1 = 1089;
+%  x2 = 1084;
 
+% ndl18_ht0_r3
+ref_a = imread(strcat(prefix,num2str(-0815, '%05g'),ext),'bmp'); 
+Impact_location = 1525; 
+%x1=1082; 
+%x2 = 1075; 
 
 y2 = Impact_location+500;
 y1 = Impact_location-500;
 
-figure(1); %for each movie, uncomment the following lines to read x1, x2
-           % from reference image
-           % this block is used to determine the level line.              
-plot(ref_a(:, Impact_location-500),'r')
+figure(1);
+plot(smooth(double((ref_a(:, Impact_location-500)))),'r');
 hold on
-plot(ref_a(:, Impact_location+500), 'k');
+plot(smooth(double((ref_a(:, Impact_location+500)))), 'g');
 hold off
-disp('Click on the middle pick in red line once: ')
+disp('Stretch figure 1 horizontally for a better resolution..... ')
+disp('Click on the middle pick in red line once: ?')
 [x1,y1g] = ginput(1);
-disp('Click on the middle pick in green line once: ')
+disp(' ... ')
+disp('Click on the middle pick in green line once: ?')
 [x2,y2g] = ginput(1);
-
-%  %for images_2020feb24/ndl14_h4_r1_-0876.bmp, read from the above lines
-%  x1 = 1089;
-%  x2 = 1084;
+x1
+x2
+disp('Save the values of x1 and x2 in this program for our record.... !')
 
 figure(2); imshow(ref_a);
 hold on
 plot([y1 y2], [x1 x2], 'r')
 hold off
+
+alpha = atan((x2-x1)/(y2-y1)); % the angle of falt surface in the image
 
 FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
 go_on = 'Y';
@@ -92,24 +67,26 @@ while go_on == 'Y' | go_on == 'y'
    ii = FirstIm+i;
    disp('The present image number: ')
    ii
-%    redo = 'Y';
-%    while redo == 'Y' | redo == 'y'   
+  
    filename = strcat(prefix, num2str(ii, '%05g'),ext);
   %  filename = 'zoom60_f2.8_testpic1.bmp';
     a = imread(filename, 'bmp');
- 
+    
     a0 =ref_a-a; %subtract the background
     a0_max = double(max(max(a0)))/256.0;
    % a1 = imadjust(a0, [0.2 0.7], [0 1]);
     a1 = imadjust(a0, [0.01 a0_max], [0 1]); %for a better contrast
-    BW = imbinarize(a0); %both a1 and a0 are okay??
+    %BW = imbinarize(a0, 'adaptive','ForegroundPolarity','dark','Sensitivity',0.7); %both a1 and a0 are okay??
+    %BW = imbinarize(a0, 'adaptive','Sensitivity',0.1); %adjust the sensitivity for a propoer contour
+   % BW = imbinarize(a0); %adjust the sensitivity for a propoer contour
+    BW = a0>max(max(a0))/5; %another way to convert into BW 
     [B, L]=bwboundaries(BW,'noholes');
 
     kk=0;
     boundary_size = zeros(1, length(B));
     for k=1:length(B)       
         boundary_size(k)= length(B{k});
-        if boundary_size(k) >500 %remove a boundary with points less than 100
+        if boundary_size(k) >200 %count boundaries with points greater than 200
              kk = kk+1;
         end
     end
@@ -122,37 +99,75 @@ while go_on == 'Y' | go_on == 'y'
         plot(boundary(:,2), boundary(:,1),'r');
         text(boundary(int16(K_M(k1)/2), 2), boundary(int16(K_M(k1)/2),1), num2str(k1),'Color','green','FontSize',24);
     end 
-    plot([y1 y2], [x1 x2], 'm')
+    plt=plot([y1 y2], [x1 x2], 'm', 'LineWidth', 2);
 
     hold off
     
+    % redo = 'Y';
+    % lp=1;  
+    % while redo == 'Y' | redo == 'y' 
+   % default: Find the stalk profile from the longest array in B
     profl = B{K_I(1)};
-    [min_x, I_min]=min(profl(:,2));
+    [min_x, I_min]=min(profl(:,2)); %In the horizontal direction
     [max_x, I_max]=max(profl(:,2));
-    profile_x = profl(I_min:I_max, 2)';
-    profile_y = profl(I_min:I_max, 1)';
-    
-    
+    x_temp = profl(I_min:I_max, 2)';
+    y_temp = profl(I_min:I_max, 1)';
+   
     figure(4); imshow(a);
     hold on
-    plot(profile_x, profile_y, 'r');
+    plot(x_temp, y_temp, 'r');
+    %hold off
+    
+   % alpha = 0; %The flat surface has aero angle in image 
+    profile_x = (y_temp-x1).*sin(alpha)+(x_temp-y1).*cos(alpha);
+    profile_y = (y_temp-x1).*cos(alpha)-(x_temp-y1).*sin(alpha);
+    
+    plot(profile_x+y1, profile_y+x1, 'y')
     hold off
     
-
-% redo = input('Mend the curve? Y/N [N]: ', 's');
-% %redo='';
-%   if isempty(redo)
-%       redo = 'N';
-%   end
-%   if redo == 'Y' || redo == 'y'
-%       clear profile_x profile_y;
-%       line???? = input('Please enter a new thresh value (current value 0.1):  ');
-%   end
-% end
-
+% %     redo = 'Y'; %use it when necessary
+% %     lp=1;  
+% %     while redo == 'Y' | redo == 'y'
+% %     redo = input('Mend the curve? Y/N [N]: ', 's');
+% %     %redo='';
+% %       if isempty(redo)
+% %           redo = 'N';
+% %       end
+% %       if redo == 'Y' || redo == 'y'
+% %           clear profile_x profile_y;
+% %         disp(' ...Pick boundaries, in Fig.3. Add space between numbers if more than 2 boundaries')
+% %         prompt = 'For instance, if first and third boundaries are picked, type 1 3?   ';
+% %         loops = input(prompt, 's');
+% %         lp = str2num(loops);
+% %         clear x_temp y_temp;
+% %         x_temp = [];
+% %         y_temp = [];
+% %         
+% %         for k2 = 1:length(lp)
+% %             profl = B{K_I(lp(k2))};
+% % %             [min_x, I_min]=min(profl(:,2)); %In the horizontal direction
+% % %             [max_x, I_max]=max(profl(:,2));
+% %             x_temp = [x_temp profl(:, 2)'];
+% %             y_temp = [y_temp profl(:, 1)'];
+% %             clear profl;
+% %         end
+% %       end
+% %       
+% %         figure(4); imshow(a);
+% %         hold on
+% %         plot(x_temp, y_temp, 'r');
+% % 
+% %         % alpha = 0; %The flat surface has zero angle in image 
+% %         profile_x = (y_temp-x1).*sin(alpha)+(x_temp-y1).*cos(alpha);
+% %         profile_y = (y_temp-x1).*cos(alpha)-(x_temp-y1).*sin(alpha);    
+% %         plot(profile_x+y1, profile_y+x1, 'y')
+% %         hold off
+% %     
+% %     end
+    
 filename_out = strcat(prefix, num2str(ii, '%05g'),ext_out);
 fid = fopen(filename_out,'w');
-fprintf(fid, '%8.2f \t %8.2f\n',[profile_x; 1000-profile_y]);
+fprintf(fid, '%8.2f \t %8.2f\n',[profile_x; -profile_y]); %relative to flat surface
 fclose(fid);
 clear profile_x profile_y
 
