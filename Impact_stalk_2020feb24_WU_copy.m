@@ -5,9 +5,41 @@
 
 clear all; close all; clc;
 
-% prefix = '../ndl14_hgt4_r1/ndl14_ht4_r1_';
-% prefix = '../ndl18_hgt0_r3/ndl18_ht0_r3_';
-prefix = '../movies_processed/ndl14_hgt6_r1/ndl14_ht6_r1_';
+format shortg
+c = clock;
+disp(c);
+
+currentDate = 20200108;
+% 20200107 is blank
+currentNdl = input('currentNdl: ');
+currentHight = input('currentHight:  ');
+currentRun = input('currentRun:  ');
+
+ref_index = input('reference image (ref_index =?):  ');
+FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
+
+prefix_1 = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_processed\';
+prefix_14 = num2str(currentDate);
+prefix_15 = '_ndl';
+prefix_10 = num2str(currentNdl);
+prefix_11 = '_hgt';
+prefix_6 = num2str(currentHight);
+prefix_7 ='_r';
+prefix_2 = num2str(currentRun);
+prefix_3 =strcat('\',num2str(currentDate),'_ndl');
+prefix_12 = num2str(currentNdl);
+prefix_13 = '_ht';
+prefix_8 =num2str(currentHight);
+prefix_9 ='_r';
+prefix_4 =num2str(currentRun);
+prefix_5= '_';
+
+prefix = strcat(prefix_1,prefix_14,prefix_15,prefix_10,prefix_11,prefix_6,...
+    prefix_7,prefix_2,prefix_3,prefix_12,prefix_13,prefix_8,prefix_9,prefix_4,prefix_5);
+
+disp(prefix);
+
+% prefix = '../movies_processed/20200108_ndl18_hgt7_r3/20200108_ndl18_ht7_r3_';
 
 ext = '.bmp';
 ext_out = '_test.txt';
@@ -26,8 +58,18 @@ ext_out = '_test.txt';
 %  x2 = 1084;
 
 % ndl18_ht0_r3
-ref_a = imread(strcat(prefix,num2str(-0815, '%05g'),ext),'bmp'); 
-Impact_location = 1525; 
+ref_a = imread(strcat(prefix,num2str(ref_index, '%05g'),ext),'bmp'); 
+% Impact_location = 1525; 
+Impact_location = 1225; 
+% Impact_location = 1127; 
+% Impact_location = 1081;
+% Impact_location = 969;
+% Impact_location = 1380;
+% Impact_location = 1433; 
+% Impact_location = 1297; 
+
+
+
 %x1=1082; 
 %x2 = 1075; 
 
@@ -45,9 +87,11 @@ disp('Click on the middle pick in red line once: ?')
 disp(' ... ')
 disp('Click on the middle pick in green line once: ?')
 [x2,y2g] = ginput(1);
-x1
-x2
-disp('Save the values of x1 and x2 in this program for our record.... !')
+% disp('x1=');
+% disp(x1);
+% disp('x2=');
+% disp(x2);
+% disp('Save the values of x1 and x2 in this program for our record.... !')
 
 figure(2); imshow(ref_a);
 hold on
@@ -56,22 +100,32 @@ hold off
 
 alpha = atan((x2-x1)/(y2-y1)); % the angle of falt surface in the image
 
-FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
+
 go_on = 'Y';
 i= 0;
 
 %EndIm = input('Please enter the number of the last image of stalk (EndIm =?):  ');
 
 while go_on == 'Y' | go_on == 'y'
+    
+    
 
    ii = FirstIm+i;
-   disp('The present image number: ')
-   ii
+%    disp('The present image number: ')
+%    ii
   
    filename = strcat(prefix, num2str(ii, '%05g'),ext);
   %  filename = 'zoom60_f2.8_testpic1.bmp';
+  
+  if(exist(filename)==0)
+      disp(ii - FirstIm);
+      disp('have been profiled.');
+      disp('------');
+      diary Impact_stalk_diary
+      break
+  end
     a = imread(filename, 'bmp');
-    
+
     a0 =ref_a-a; %subtract the background
     a0_max = double(max(max(a0)))/256.0;
    % a1 = imadjust(a0, [0.2 0.7], [0 1]);
@@ -91,7 +145,7 @@ while go_on == 'Y' | go_on == 'y'
         end
     end
     [K_M, K_I]=sort(boundary_size, 'descend');
-        
+
     figure(3); imshow(a1);
     hold on
     for k1=1:kk
@@ -102,7 +156,7 @@ while go_on == 'Y' | go_on == 'y'
     plt=plot([y1 y2], [x1 x2], 'm', 'LineWidth', 2);
 
     hold off
-    
+
     % redo = 'Y';
     % lp=1;  
     % while redo == 'Y' | redo == 'y' 
@@ -112,19 +166,19 @@ while go_on == 'Y' | go_on == 'y'
     [max_x, I_max]=max(profl(:,2));
     x_temp = profl(I_min:I_max, 2)';
     y_temp = profl(I_min:I_max, 1)';
-   
+
     figure(4); imshow(a);
     hold on
     plot(x_temp, y_temp, 'r');
     %hold off
-    
+
    % alpha = 0; %The flat surface has aero angle in image 
     profile_x = (y_temp-x1).*sin(alpha)+(x_temp-y1).*cos(alpha);
     profile_y = (y_temp-x1).*cos(alpha)-(x_temp-y1).*sin(alpha);
-    
+
     plot(profile_x+y1, profile_y+x1, 'y')
     hold off
-    
+
 % %     redo = 'Y'; %use it when necessary
 % %     lp=1;  
 % %     while redo == 'Y' | redo == 'y'
@@ -164,19 +218,20 @@ while go_on == 'Y' | go_on == 'y'
 % %         hold off
 % %     
 % %     end
-    
+
 filename_out = strcat(prefix, num2str(ii, '%05g'),ext_out);
 fid = fopen(filename_out,'w');
 fprintf(fid, '%8.2f \t %8.2f\n',[profile_x; -profile_y]); %relative to flat surface
 fclose(fid);
 clear profile_x profile_y
 
-go_on = input('Continue to process NEXT image? Y/N [Y]: ','s');
+% go_on = input('Continue to process NEXT image? Y/N [Y]: ','s');
 %go_on ='';
     if isempty(go_on)
         go_on = 'Y';
     end
     i = i+1;
+    
 
 end
 
