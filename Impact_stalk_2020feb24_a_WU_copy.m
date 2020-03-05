@@ -9,14 +9,18 @@ format shortg
 c = clock;
 disp(c);
 
-currentDate = 20200108;
+currentDate = 20200109;
 % 20200107 is blank
 currentNdl = input('currentNdl: ');
 currentHight = input('currentHight:  ');
 currentRun = input('currentRun:  ');
 
+
+
+
 ref_index = input('reference image (ref_index =?):  ');
-FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
+% FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
+FirstIm = ref_index + 53;
 
 prefix_1 = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_processed\';
 prefix_14 = num2str(currentDate);
@@ -43,6 +47,10 @@ disp(prefix);
 
 ext = '.bmp';
 ext_out = '_test.txt';
+extlevel_out = '.txt';
+
+levelDir = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_leveled\';
+level_out = strcat(levelDir,'level',extlevel_out);
 
 % load the image before the drop impact in the movie as the background reference 
 %ref_a = imread(strcat(prefix,num2str(7057, '%04g'),ext),'bmp');
@@ -87,11 +95,12 @@ disp('Click on the middle pick in red line once: ?')
 disp(' ... ')
 disp('Click on the middle pick in green line once: ?')
 [x2,y2g] = ginput(1);
-% disp('x1=');
-% disp(x1);
-% disp('x2=');
-% disp(x2);
 % disp('Save the values of x1 and x2 in this program for our record.... !')
+
+fid = fopen(level_out,'a');
+fprintf(fid, '%d \t %d \t %d \t %d \t %d \t %d \t %d \t %d \t %d \t %d \t %d \t %8.2f\n',...
+    [currentDate;currentNdl;currentHight;currentRun;c(1);c(2);c(3);c(4);c(5);c(6);x1;x2]); 
+fclose(fid);
 
 figure(2); imshow(ref_a);
 hold on
@@ -118,9 +127,8 @@ while go_on == 'Y' | go_on == 'y'
   %  filename = 'zoom60_f2.8_testpic1.bmp';
   
   if(exist(filename)==0)
-      disp(ii - FirstIm);
-      disp('have been profiled.');
-      disp('------');
+      fprintf('%d have been profiled.\n',ii - FirstIm);
+      disp('----------------------------------');
       diary Impact_stalk_diary
       break
   end
