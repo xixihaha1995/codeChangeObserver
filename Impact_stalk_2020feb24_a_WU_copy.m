@@ -20,7 +20,9 @@ currentRun = input('currentRun:  ');
 
 ref_index = input('reference image (ref_index =?):  ');
 % FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
-FirstIm = ref_index + 53;
+% FirstIm = ref_index + 40;
+% FirstIm = ref_index + 53;
+FirstIm = ref_index + 45;
 
 prefix_1 = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_processed\';
 prefix_14 = num2str(currentDate);
