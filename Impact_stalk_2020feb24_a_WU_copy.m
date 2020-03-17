@@ -17,12 +17,14 @@ currentRun = input('currentRun:  ');
 
 
 
+ext = '.bmp';
+ext_out = '_test.txt';
+extlevel_out = '.txt';
 
-ref_index = input('reference image (ref_index =?):  ');
-% FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
-% FirstIm = ref_index + 40;
-% FirstIm = ref_index + 53;
-FirstIm = ref_index + 45;
+levelDir = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_leveled\';
+level_out = strcat(levelDir,'level',extlevel_out);
+
+% ref_index = input('reference image (ref_index =?):  ');
 
 prefix_1 = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_processed\';
 prefix_14 = num2str(currentDate);
@@ -42,17 +44,33 @@ prefix_5= '_';
 
 prefix = strcat(prefix_1,prefix_14,prefix_15,prefix_10,prefix_11,prefix_6,...
     prefix_7,prefix_2,prefix_3,prefix_12,prefix_13,prefix_8,prefix_9,prefix_4,prefix_5);
-
 disp(prefix);
+
+ref_index = -2500;
+ref_file = strcat(prefix,num2str(ref_index, '%05g'),ext);
+
+
+
+while exist(ref_file,'file')==0
+    ref_index = ref_index + 1;
+    prefix = strcat(prefix_1,prefix_14,prefix_15,prefix_10,prefix_11,prefix_6,...
+        prefix_7,prefix_2,prefix_3,prefix_12,prefix_13,prefix_8,prefix_9,prefix_4,prefix_5);
+    ref_file = strcat(prefix,num2str(ref_index, '%05g'),ext);
+end
+
+% FirstIm = input('Please enter the number of first image of stalk (FirstIm =?):  ');
+% FirstIm = ref_index + 40;
+% FirstIm = ref_index + 53;
+FirstIm = ref_index + 40;
+
+
+
+
+
+
 
 % prefix = '../movies_processed/20200108_ndl18_hgt7_r3/20200108_ndl18_ht7_r3_';
 
-ext = '.bmp';
-ext_out = '_test.txt';
-extlevel_out = '.txt';
-
-levelDir = 'C:\Users\lab-admin\Desktop\Lichen_Wu\movies_leveled\';
-level_out = strcat(levelDir,'level',extlevel_out);
 
 % load the image before the drop impact in the movie as the background reference 
 %ref_a = imread(strcat(prefix,num2str(7057, '%04g'),ext),'bmp');
@@ -87,6 +105,8 @@ y2 = Impact_location+500;
 y1 = Impact_location-500;
 
 figure(1);
+set(gcf,'WindowState','maximized')
+
 plot(smooth(double((ref_a(:, Impact_location-500)))),'r');
 hold on
 plot(smooth(double((ref_a(:, Impact_location+500)))), 'g');
